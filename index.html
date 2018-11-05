@@ -1,0 +1,70 @@
+<html>
+    <head>
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Poor+Story" rel="stylesheet">
+
+        <link href="style.css" rel="stylesheet"/>
+    </head>
+    <body class="unrendered"
+	  ondragenter="cancelEvent(event)"
+	  ondragover="cancelEvent(event)"
+	  ondrop="APP.onDropFile(cancelEvent(event))">
+	
+        <div class="solid column container" id="binContainer">
+            <h1>Binary</h1>
+            <iframe id="emulator"
+		    class="emulator"
+		    data-if="bin!=null"
+		    src="PokittoEmu.html"
+		    onclick="DOM.emulator.contentWindow.focus()"></iframe>
+	    <div class="emulator placeholder" data-if="bin==null"></div>
+	    
+            <div id="btnExport" onclick="APP.savePOP()" data-if="bin!=null">
+		Save POP
+            </div>
+	    
+        </div>
+
+	<div class="column container">
+	    
+            <div id="thumbContainer" class="solid column container">
+		<h1>Thumbnails</h1>
+		<div class="thumbBox">
+		    <div class="thumbLabel"><span>24x24</span></div>
+		    <img id="thumb24" data-if="thumb24" data-src="${thumb24.src}" />
+		    <img id="preview24" class="mouseover" data-if="preview24" data-src="${preview24.src}" />
+		</div>
+		<div class="thumbBox">
+		    <div class="thumbLabel"><span>36x36</span></div>
+		    <img id="thumb36" data-if="thumb36" data-src="${thumb36.src}" />
+		    <img id="preview36" class="mouseover" data-if="preview36" data-src="${preview36.src}" />
+		</div>
+            </div>
+	    
+            <div id="infoContainer" class="solid column container">
+		<h1>Information</h1>
+		<label>Title<br/> <input id="title" placeholder="Super Pokitto Game" onchange="APP.onChangeTitle(this.value)" /></label>
+
+		<label>Author<br/> <input id="author" placeholder="Your Name" /></label>
+		<label>Description<br/> <input id="description" placeholder="Small description here." /></label>
+
+            </div>
+	    
+	</div>
+
+        <div class="solid container" id="screenshotContainer">
+          <h1>Screenshots</h1>
+	  <div id="screenshotBox" data-array="screenshot">
+	    <img class="screenshot" data-src="${value.src}"/>
+	  </div>
+	  
+          <div id="btnScreenshot" onclick="APP.takeScreenshot()" data-if="bin!=null">
+	    Take Screenshot
+          </div>
+	  
+        </div>
+	
+        <script src="uwa.js"></script>
+        <script src="index.js"></script>
+    </body>
+</html>
