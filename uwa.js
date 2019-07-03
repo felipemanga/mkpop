@@ -1,11 +1,13 @@
-let DOM = {};
-let DATA = {};
+const DOM = {};
+const DATA = {};
 let hnd;
 
-function initDATA( desc ){
-    for( k in desc ){
+function importData( desc ){
+    for( let k in desc ){
         makeSetter( k );
     }
+
+    return {DOM, DATA};
 
     function makeSetter( k ){
         let setter = typeof desc[k] == "function" ? desc[k] : null;
@@ -13,6 +15,7 @@ function initDATA( desc ){
         if( setter ) value = setter();
         Object.defineProperty( DATA, k, {
             enumerable:true,
+            configurable:true,
             get:function(){ return value; },
             set:function(v){
                 if( setter ) v = setter(v, value);
@@ -83,8 +86,10 @@ function render(){
         if( e.dataset.array ){
 
             if( !("backupDOM" in e) ){
-                e.backupDOM = e.innerHTML;
-                e.backupDOMChildCount = e.childNodes.length;
+                let bd = document.createDocumentFragment();
+                while( e.childNodes.length )
+                    bd.appendChild( e.childNodes[0] );
+                e.backupDOM = bd;
             }
 
             let arr = run( e.dataset.array, ctx, false );
@@ -92,11 +97,9 @@ function render(){
             if( !arr || !Array.isArray(arr) )
                 arr = [];
 
-            while( e.childNodes.length )
-                e.childNodes[0].remove();
+            e.innerHTML = '';
 
             let cctx = Object.assign({}, ctx);
-            let parser = new DOMParser();
             for( let key in arr ){
                 
                 cctx.key = key;
@@ -104,13 +107,10 @@ function render(){
                 if( typeof cctx.value == "object" && cctx.value )
                     Object.assign( cctx, cctx.value );
 
-                let doc = parser.parseFromString( e.backupDOM, "text/html" );
-                
-                for( let i=0; i<doc.body.childNodes.length; ++i ){
-                    let node = doc.body.childNodes[i];
-                    e.appendChild( node );
-                    prerenderNode( node, cctx );
-                }
+                let doc = e.backupDOM.cloneNode(true);
+                let childNodes = [...doc.childNodes];
+                e.appendChild(doc);
+                childNodes.forEach( node => prerenderNode( node, cctx ) );
                 
             }
 
@@ -179,7 +179,7 @@ function render(){
         if( e == document.body ){
             document.body.classList.remove("unrendered");
 
-            DOM = {};
+            Object.keys(DOM).forEach( k => delete DOM[k] );
 
             let elements = document.querySelectorAll("*");
             
@@ -219,3 +219,5 @@ function render(){
 })();
 
 render();
+if( typeof module != "undefined" )
+    module.exports = { importData, DOM, render };
