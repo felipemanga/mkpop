@@ -21,8 +21,11 @@ const TagType = [
     "IMG_100X24_565",
     "IMG_110X88_565",
 
-    "IMG_220X176_565"
+    "IMG_220X176_565",
 
+    "IMG_200X80_4BPP",
+    "IMG_200X80_565"
+    
 ].reduce( (obj, v, i) => {
     obj[v] = i;
     return obj;
@@ -182,6 +185,24 @@ const APP = {
                 TagType.IMG_100X24_565,
                 DATA.title100x24,
                 100, 24
+            );
+
+            append( out, img );
+        }
+
+        if( DATA.title200x80 ){
+            let img = APP.img4bpp(
+                TagType.IMG_200X80_4BPP,
+                DATA.title200x80,
+                200, 80
+            );
+            
+            append( out, img );
+
+            img = APP.img565(
+                TagType.IMG_200X80_565,
+                DATA.title200x80,
+                200, 80
             );
 
             append( out, img );
@@ -360,6 +381,7 @@ const APP = {
             case TagType.IMG_36X36_4BPP: width=height=36; break;
             case TagType.IMG_100X24_4BPP: width=100; height=24; break;
             case TagType.IMG_110X88_4BPP: width=110; height=24; break;
+            case TagType.IMG_200X80_4BPP: width=200; height=80; break;
             default: return null;
             }
             
@@ -567,6 +589,8 @@ const APP = {
                 store("thumb36", img);
             else if( width == 110 && height == 24 )
                 store("title110x24", img);
+            else if( width == 200 && height == 80 )
+                store("title200x80", img);
             else if( width == 220 && height == 176 ){
                 DATA.screenshot.push( img );
                 render();
@@ -578,7 +602,7 @@ const APP = {
 
 };
 
-initDATA({
+importData({
     bin:null,
 
     thumb24(v){
@@ -611,8 +635,10 @@ initDATA({
     preview36:null,
     screenshot:[],
     title100x24:null,
+    title200x80:null,
     title:null,
     author:null,
+    fileName:null,
     description:null,
     name:null,
 });
