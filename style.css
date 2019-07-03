@@ -43,6 +43,8 @@ body {
 .column.container h1 {
     text-align: center;
     flex-grow: 0;
+    margin: 2px;
+    font-size: 1.2em;
 }
 
 * {
@@ -125,7 +127,7 @@ body {
 
 #thumbContainer {
     text-align: center;
-    padding-bottom: 40px;
+    padding-bottom: 10px;
     image-rendering: pixelated;
 }
 
@@ -134,6 +136,7 @@ body {
     margin: auto;
     border: 2px dashed #999;
     position: relative;
+    margin-top: 10px;
 }
 
 .mouseover {
@@ -158,6 +161,12 @@ body {
 #thumb36{
     width: 92px;
     height: 92px;
+    display: inline;
+}
+
+#title200x80{
+    width: 200px;
+    height: 80px;
     display: inline;
 }
 

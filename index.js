@@ -24,7 +24,8 @@ const TagType = [
     "IMG_220X176_565",
 
     "IMG_200X80_4BPP",
-    "IMG_200X80_565"
+    "IMG_200X80_565",
+    "VERSION"
     
 ].reduce( (obj, v, i) => {
     obj[v] = i;
@@ -132,6 +133,8 @@ const APP = {
         append( out, TagType.LONGNAME, DATA.title || "Game" );
 
         append( out, TagType.AUTHOR, DATA.author || "Anon" );
+
+        append( out, TagType.VERSION, DATA.version || "v1.0.0" );
 
         append( out, TagType.DESCRIPTION, DATA.description || "Pokitto Game" );
 
@@ -638,6 +641,7 @@ importData({
     title200x80:null,
     title:null,
     author:null,
+    version:null,
     fileName:null,
     description:null,
     name:null,
