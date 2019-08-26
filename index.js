@@ -418,6 +418,28 @@ const APP = {
     },
 
     makeThumb( size, text ){
+        if( !DATA.screenshot || !DATA.screenshot.length ){
+            return APP.makeThumbText(size, text);
+        }
+
+        let full = DATA.screenshot[0];
+        let fullHeight = full.naturalHeight || full.height;
+        let fullWidth  = full.naturalWidth || full.width;
+        
+        let scale = size / fullHeight;
+        let canvas = document.createElement("canvas");
+        canvas.width = size;
+        canvas.height = size;
+        let ctx = canvas.getContext("2d");
+        ctx.scale(scale, scale);
+        ctx.drawImage(full, fullHeight/2 - fullWidth/2, 0, fullWidth, fullHeight);
+        
+        let img = document.createElement("img");
+        img.src = canvas.toDataURL();
+        return img;
+    },
+
+    makeThumbText( size, text ){
         let canvas = document.createElement("canvas");
         canvas.width = size;
         canvas.height = size;
@@ -523,18 +545,17 @@ const APP = {
         }            
     },
 
+    makeThumbs(){
+        if( !DATA.generatedThumbs )
+            return;
+        store("thumb24", APP.makeThumb( 24, name ));
+        store("thumb36", APP.makeThumb( 36, name ));
+        store("title100x24", APP.makeTitle( name ));
+    },
+
     onChangeTitle( name ){
         name = name || DATA.title;
-        
-        if( !DATA.thumb24 || /^data:/.test(DATA.thumb24.src) )
-            store("thumb24", APP.makeThumb( 24, name ));
-        
-        if( !DATA.thumb36 || /^data:/.test(DATA.thumb24.src)  )
-            store("thumb36", APP.makeThumb( 36, name ));
-        
-        if( !DATA.title100x24 || /^data:/.test(DATA.thumb24.src)  )
-            store("title100x24", APP.makeTitle( name ));
-
+        APP.makeThumbs();
     },
 
     convert( type, img, w, h, key ){
@@ -586,16 +607,21 @@ const APP = {
             let width = img.naturalWidth;
             let height = img.naturalHeight;
 
-            if( width == 24 )
+            if( width == 24 ){
                 store("thumb24", img);
-            else if( width == 36 )
+                DATA.generatedThumbs = false;
+            }else if( width == 36 ){
                 store("thumb36", img);
-            else if( width == 110 && height == 24 )
+                DATA.generatedThumbs = false;
+            }else if( width == 110 && height == 24 ){
                 store("title110x24", img);
-            else if( width == 200 && height == 80 )
+                DATA.generatedThumbs = false;
+            }else if( width == 200 && height == 80 ){
                 store("title200x80", img);
-            else if( width == 220 && height == 176 ){
+                DATA.generatedThumbs = false;
+            }else if( width == 220 && height == 176 ){
                 DATA.screenshot.push( img );
+                APP.makeThumbs();
                 render();
             }
 
@@ -645,4 +671,5 @@ importData({
     fileName:null,
     description:null,
     name:null,
+    generatedThumbs:true
 });
